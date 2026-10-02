@@ -7,7 +7,7 @@ import {
 
 // REPLACE THIS WITH THE SELLER'S WHATSAPP NUMBER (including country code, no + or spaces)
 // e.g., '919876543210' for India
-const STORE_WHATSAPP_NUMBER = '919876543210'; 
+const STORE_WHATSAPP_NUMBER = '7782962661'; 
 
 const PRODUCTS = [
   {
