@@ -2,11 +2,10 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { 
   ShoppingBag, Search, X, ChevronRight, Star, ShieldCheck, 
   Truck, RotateCcw, Award, Menu, Check, SlidersHorizontal, ArrowRight,
-  Plus, Minus, Trash2, Send
+  Plus, Minus, Trash2, Send, ArrowLeft, Zap, ThumbsUp
 } from 'lucide-react';
 
-// REPLACE THIS WITH THE SELLER'S WHATSAPP NUMBER (including country code, no + or spaces)
-// e.g., '919876543210' for India
+// SET YOUR WHATSAPP NUMBER HERE (with country code, no + or spaces)
 const STORE_WHATSAPP_NUMBER = '7782962661'; 
 
 const PRODUCTS = [
@@ -19,11 +18,18 @@ const PRODUCTS = [
     rating: 4.9,
     reviewsCount: 142,
     badge: "Bestseller",
-    description: "Handcrafted from full-grain nappa leather with durable comfort rubber outsoles.",
-    images: ["https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Classic White", "Chalk Ivory", "Onyx Black"],
+    description: "Handcrafted from top-grade full-grain nappa leather. Features high-density memory cushioning and durable Margom-style cup soles for day-long walking ease.",
+    images: [
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [6, 7, 8, 9, 10, 11],
-    stock: 12
+    stock: 12,
+    reviews: [
+      { id: 1, author: "Vikas M.", rating: 5, date: "2 days ago", comment: "Exceptional leather feel. The cushioning is softer than most branded sneakers." },
+      { id: 2, author: "Arjun K.", rating: 5, date: "1 week ago", comment: "Clean silhouette and true to UK size. Looks amazing with chinos." }
+    ]
   },
   {
     id: 2,
@@ -34,11 +40,18 @@ const PRODUCTS = [
     rating: 4.8,
     reviewsCount: 88,
     badge: "Signature",
-    description: "Unlined butter-soft calf suede with flexible hand-stitched soles.",
-    images: ["https://images.unsplash.com/photo-1533867617858-e7b97e060509?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Tobacco Tan", "Navy Deep", "Olive Suede"],
+    description: "Unlined butter-soft calf suede with Blake-stitched flexible leather soles. Fits like a glove right out of the box with zero break-in period.",
+    images: [
+      "https://images.unsplash.com/photo-1533867617858-e7b97e060509?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1582898787091-d961e604ec22?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1579338559194-a162d19bf842?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [7, 8, 9, 10, 11],
-    stock: 7
+    stock: 7,
+    reviews: [
+      { id: 1, author: "Rohan D.", rating: 5, date: "3 days ago", comment: "Super luxurious suede texture. Very comfortable for formal events." },
+      { id: 2, author: "Manish S.", rating: 4, date: "2 weeks ago", comment: "Comfortable and light. Highly recommended." }
+    ]
   },
   {
     id: 3,
@@ -49,11 +62,17 @@ const PRODUCTS = [
     rating: 5.0,
     reviewsCount: 64,
     badge: "Editor's Choice",
-    description: "Rugged oiled leather with storm welt construction and heavy-duty grip soles.",
-    images: ["https://images.unsplash.com/photo-1608256246200-53e635b5b65f?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Dark Brown", "Auburn Waxed", "Matte Black"],
+    description: "Rugged oiled pull-up leather with storm welt construction and heavy-duty commando lug outsoles for unmatched traction on all terrains.",
+    images: [
+      "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1638247025967-b4e38f787b76?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1520639888713-7851133b1ed0?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [7, 8, 9, 10, 11],
-    stock: 5
+    stock: 5,
+    reviews: [
+      { id: 1, author: "Sameer N.", rating: 5, date: "Just now", comment: "Rock-solid build quality. Heavy leather that ages gracefully." }
+    ]
   },
   {
     id: 4,
@@ -64,11 +83,17 @@ const PRODUCTS = [
     rating: 4.7,
     reviewsCount: 53,
     badge: "New Arrival",
-    description: "Artisanal hand-braided leather mule lined with breathable genuine leather.",
-    images: ["https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Cognac", "Sand Dune", "Black"],
+    description: "Hand-braided supple leather upper resting on an ergonomic padded footbed. Designed for effortless indoor-outdoor slip-on comfort.",
+    images: [
+      "https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1562273138-f46be4ebdf33?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [6, 7, 8, 9, 10],
-    stock: 9
+    stock: 9,
+    reviews: [
+      { id: 1, author: "Gaurav P.", rating: 5, date: "4 days ago", comment: "Breathable and soft. Doesn't bite the feet at all." }
+    ]
   },
   {
     id: 5,
@@ -79,11 +104,17 @@ const PRODUCTS = [
     rating: 4.6,
     reviewsCount: 210,
     badge: "Sale",
-    description: "Ultra-breathable recycled knit upper paired with high-rebound cushioning foam.",
-    images: ["https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Bone & Sage", "Triple Charcoal", "Glacier Blue"],
+    description: "Ultralight breathable mesh shoe engineered for daily gym routines, morning jogs, and active urban commutes.",
+    images: [
+      "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [6, 7, 8, 9, 10, 11],
-    stock: 20
+    stock: 20,
+    reviews: [
+      { id: 1, author: "Pooja B.", rating: 5, date: "5 days ago", comment: "Weighs almost nothing and feels like walking on clouds." }
+    ]
   },
   {
     id: 6,
@@ -94,11 +125,17 @@ const PRODUCTS = [
     rating: 4.9,
     reviewsCount: 115,
     badge: "Bestseller",
-    description: "Handcrafted Chelsea boot featuring durable elastic stretch gore panels and leather lining.",
-    images: ["https://images.unsplash.com/photo-1638247025967-b4e38f787b76?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Espresso Burnished", "Obsidian Black"],
+    description: "Handcrafted Chelsea boot featuring durable elastic stretch gore panels and premium burnished full-grain crust leather.",
+    images: [
+      "https://images.unsplash.com/photo-1638247025967-b4e38f787b76?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [7, 8, 9, 10, 11],
-    stock: 14
+    stock: 14,
+    reviews: [
+      { id: 1, author: "Kunal T.", rating: 5, date: "1 week ago", comment: "Fits snugly around the ankle. Premium quality finish." }
+    ]
   },
   {
     id: 7,
@@ -109,11 +146,17 @@ const PRODUCTS = [
     rating: 5.0,
     reviewsCount: 47,
     badge: "Heritage",
-    description: "Cut from a single flawless hide of premium leather with beveled waist soles.",
-    images: ["https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Bordeaux Wine", "Piano Black", "Chestnut"],
+    description: "Cut from a single seamless piece of premium leather with beveled waist soles and high mirror-gloss toe box.",
+    images: [
+      "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1531310197839-ccf54634509e?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1560769629-975ec94e6a86?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [7, 8, 9, 10, 11],
-    stock: 8
+    stock: 8,
+    reviews: [
+      { id: 1, author: "Rajesh V.", rating: 5, date: "3 weeks ago", comment: "Genuine wholecut oxfords are impossible to find at this price. 10/10." }
+    ]
   },
   {
     id: 8,
@@ -124,11 +167,17 @@ const PRODUCTS = [
     rating: 4.5,
     reviewsCount: 78,
     badge: "Sale",
-    description: "Anatomically contoured cork footbed wrapped in supple suede with metal buckles.",
-    images: ["https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Mushroom", "Tuscan Ochre", "Midnight"],
+    description: "Anatomically contoured cork footbed wrapped in supple suede with brushed anti-rust metal buckles.",
+    images: [
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [6, 7, 8, 9, 10],
-    stock: 15
+    stock: 15,
+    reviews: [
+      { id: 1, author: "Deepak M.", rating: 5, date: "1 month ago", comment: "The cork footbed shapes nicely to the foot arch." }
+    ]
   },
   {
     id: 9,
@@ -139,11 +188,17 @@ const PRODUCTS = [
     rating: 4.8,
     reviewsCount: 160,
     badge: "Trending",
-    description: "Vintage silhouette with suede overlays and durable herringbone gum tread.",
-    images: ["https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Vintage Clay", "Forest Moss", "Off-White"],
+    description: "Vintage 70s track styling with split-suede overlays, breathable mesh underlays, and herringbone gum tread.",
+    images: [
+      "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [6, 7, 8, 9, 10, 11],
-    stock: 11
+    stock: 11,
+    reviews: [
+      { id: 1, author: "Tarun G.", rating: 5, date: "2 days ago", comment: "Retro aesthetic done right. Very lightweight." }
+    ]
   },
   {
     id: 10,
@@ -154,11 +209,17 @@ const PRODUCTS = [
     rating: 4.9,
     reviewsCount: 92,
     badge: "Staff Pick",
-    description: "Gold-tone snaffle horsebit buckle on hand-burnished crust leather.",
-    images: ["https://images.unsplash.com/photo-1582898787091-d961e604ec22?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Mahogany", "Black Polish"],
+    description: "Gold-tone snaffle horsebit buckle sitting over hand-burnished crust leather with full cowhide lining.",
+    images: [
+      "https://images.unsplash.com/photo-1582898787091-d961e604ec22?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1533867617858-e7b97e060509?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1579338559194-a162d19bf842?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [7, 8, 9, 10, 11],
-    stock: 6
+    stock: 6,
+    reviews: [
+      { id: 1, author: "Aditya C.", rating: 5, date: "1 week ago", comment: "Buckle has nice weight and doesn't rattle. Looks very rich." }
+    ]
   },
   {
     id: 11,
@@ -169,11 +230,17 @@ const PRODUCTS = [
     rating: 4.7,
     reviewsCount: 59,
     badge: "Durable",
-    description: "Heavy commando rubber sole with weather-resistant pebble grain leather.",
-    images: ["https://images.unsplash.com/photo-1582588678413-dbf45f4823e9?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Cognac Grain", "Matte Carbon"],
+    description: "Durable commando rubber sole with weather-resistant scotch-grain pebble leather. Built for daily corporate wear.",
+    images: [
+      "https://images.unsplash.com/photo-1582588678413-dbf45f4823e9?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1531310197839-ccf54634509e?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [7, 8, 9, 10, 11],
-    stock: 10
+    stock: 10,
+    reviews: [
+      { id: 1, author: "Suresh P.", rating: 4, date: "2 weeks ago", comment: "Sturdy and provides great grip even on wet surfaces." }
+    ]
   },
   {
     id: 12,
@@ -184,11 +251,17 @@ const PRODUCTS = [
     rating: 5.0,
     reviewsCount: 38,
     badge: "Winter Warmth",
-    description: "Thick insulated lining, storm-beaded welts, and rugged traction lugs.",
-    images: ["https://images.unsplash.com/photo-1520639888713-7851133b1ed0?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Bison Brown", "Smoky Grey"],
+    description: "Insulated interior lining, storm-beaded welts, and rugged high-traction lugs for cold season protection.",
+    images: [
+      "https://images.unsplash.com/photo-1520639888713-7851133b1ed0?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1638247025967-b4e38f787b76?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [7, 8, 9, 10, 11],
-    stock: 4
+    stock: 4,
+    reviews: [
+      { id: 1, author: "Naveen J.", rating: 5, date: "1 month ago", comment: "Super heavy duty, exactly what I needed for hill station rides." }
+    ]
   },
   {
     id: 13,
@@ -199,11 +272,17 @@ const PRODUCTS = [
     rating: 4.6,
     reviewsCount: 44,
     badge: "Limited",
-    description: "Traditional closed-toe fisherman design handcrafted with supple leather straps.",
-    images: ["https://images.unsplash.com/photo-1562273138-f46be4ebdf33?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Natural Tan", "Dark Earth"],
+    description: "Traditional closed-toe fisherman design handcrafted with supple interlocking leather straps and cushioned footbed.",
+    images: [
+      "https://images.unsplash.com/photo-1562273138-f46be4ebdf33?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [6, 7, 8, 9, 10],
-    stock: 7
+    stock: 7,
+    reviews: [
+      { id: 1, author: "Harsh L.", rating: 5, date: "3 weeks ago", comment: "Protects the toes while keeping feet cool." }
+    ]
   },
   {
     id: 14,
@@ -214,11 +293,17 @@ const PRODUCTS = [
     rating: 4.9,
     reviewsCount: 84,
     badge: "Sale",
-    description: "Perforated wingtip broguing with hand-applied patina finish and stacked leather heel.",
-    images: ["https://images.unsplash.com/photo-1531310197839-ccf54634509e?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Museum Cognac", "Ebony Gloss"],
+    description: "Artisanal wingtip broguing with hand-applied burnished museum patina finish and stacked leather heel.",
+    images: [
+      "https://images.unsplash.com/photo-1531310197839-ccf54634509e?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1560769629-975ec94e6a86?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [7, 8, 9, 10, 11],
-    stock: 8
+    stock: 8,
+    reviews: [
+      { id: 1, author: "Karan B.", rating: 5, date: "4 days ago", comment: "The toe perforation details are super sharp. Worth every rupee." }
+    ]
   },
   {
     id: 15,
@@ -229,11 +314,17 @@ const PRODUCTS = [
     rating: 4.4,
     reviewsCount: 96,
     badge: "Summer",
-    description: "Breathable flax linen upper attached to authentic braided jute rope sole.",
-    images: ["https://images.unsplash.com/photo-1575537302964-96cd47c06b1b?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Natural Oatmeal", "Striped Indigo", "Sage"],
+    description: "Pure woven flax linen upper attached to authentic braided jute rope and vulcanized slip-resistant gum base.",
+    images: [
+      "https://images.unsplash.com/photo-1575537302964-96cd47c06b1b?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1533867617858-e7b97e060509?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1582898787091-d961e604ec22?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [6, 7, 8, 9, 10],
-    stock: 18
+    stock: 18,
+    reviews: [
+      { id: 1, author: "Vivek R.", rating: 4, date: "1 month ago", comment: "Ideal for beach vacations and casual weekend wear." }
+    ]
   },
   {
     id: 16,
@@ -244,11 +335,17 @@ const PRODUCTS = [
     rating: 4.8,
     reviewsCount: 112,
     badge: "High Tech",
-    description: "Reinforced ripstop upper with responsive cushioned shank and all-terrain grip.",
-    images: ["https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Granite Grey", "Triple Black"],
+    description: "Reinforced ripstop composite upper with responsive cushioned shank and high-traction all-weather studded tread.",
+    images: [
+      "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [7, 8, 9, 10, 11],
-    stock: 13
+    stock: 13,
+    reviews: [
+      { id: 1, author: "Aakash S.", rating: 5, date: "2 weeks ago", comment: "Great traction on trails and wet pavement." }
+    ]
   },
   {
     id: 17,
@@ -259,11 +356,17 @@ const PRODUCTS = [
     rating: 4.8,
     reviewsCount: 67,
     badge: "Classic",
-    description: "Dual polished gunmetal buckles with chiseled toe profile and soft padded insole.",
-    images: ["https://images.unsplash.com/photo-1560769629-975ec94e6a86?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Dark Walnut", "Black"],
+    description: "Dual polished gunmetal buckles with chiseled toe profile and soft padded insole for sharp formal styling.",
+    images: [
+      "https://images.unsplash.com/photo-1560769629-975ec94e6a86?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1531310197839-ccf54634509e?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [7, 8, 9, 10, 11],
-    stock: 9
+    stock: 9,
+    reviews: [
+      { id: 1, author: "Tanmay M.", rating: 5, date: "1 week ago", comment: "Gets compliments every time I wear these to meetings." }
+    ]
   },
   {
     id: 18,
@@ -274,11 +377,17 @@ const PRODUCTS = [
     rating: 4.7,
     reviewsCount: 73,
     badge: "Sale",
-    description: "Water-resistant waxed suede ankle boot with soft lining and crepe-textured sole.",
-    images: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Snuff Brown", "Charcoal Suede"],
+    description: "Water-resistant waxed suede ankle boot with soft lining and crepe-textured shock-absorbing sole.",
+    images: [
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1638247025967-b4e38f787b76?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [7, 8, 9, 10, 11],
-    stock: 11
+    stock: 11,
+    reviews: [
+      { id: 1, author: "Rohit R.", rating: 5, date: "5 days ago", comment: "Comfortable right out of the box. Nice rugged suede look." }
+    ]
   },
   {
     id: 19,
@@ -289,11 +398,17 @@ const PRODUCTS = [
     rating: 4.9,
     reviewsCount: 131,
     badge: "Icon",
-    description: "Flexible moccasin construction with rubber grip nubs for day-long walking ease.",
-    images: ["https://images.unsplash.com/photo-1579338559194-a162d19bf842?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Nautical Navy", "Tan Brown", "Black"],
+    description: "Flexible tubular moccasin construction with rubber grip nubs extending up the heel counter for driving comfort.",
+    images: [
+      "https://images.unsplash.com/photo-1579338559194-a162d19bf842?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1533867617858-e7b97e060509?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1582898787091-d961e604ec22?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [6, 7, 8, 9, 10],
-    stock: 16
+    stock: 16,
+    reviews: [
+      { id: 1, author: "Varun H.", rating: 5, date: "3 days ago", comment: "Pure comfort during long highway drives." }
+    ]
   },
   {
     id: 20,
@@ -304,15 +419,28 @@ const PRODUCTS = [
     rating: 4.3,
     reviewsCount: 52,
     badge: "Best Value",
-    description: "Comfortable leather toe-strap with contoured arch support and anti-skid rubber bottom.",
-    images: ["https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?q=80&w=1000&auto=format&fit=crop"],
-    colors: ["Havana Brown", "Black"],
+    description: "Comfortable leather toe-strap with contoured arch support and anti-skid rubber bottom for daily use.",
+    images: [
+      "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=1000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=1000&auto=format&fit=crop"
+    ],
     sizes: [6, 7, 8, 9, 10],
-    stock: 22
+    stock: 22,
+    reviews: [
+      { id: 1, author: "Sunil D.", rating: 4, date: "2 weeks ago", comment: "Good quality daily slippers with genuine leather strap." }
+    ]
   }
 ];
 
 export default function App() {
+  // Navigation View State: 'catalog' | 'product-detail'
+  const [currentView, setCurrentView] = useState('catalog');
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [selectedSize, setSelectedSize] = useState(null);
+
+  // Cart & UI State
   const [cart, setCart] = useState(() => {
     try {
       const saved = localStorage.getItem('as_cart');
@@ -323,14 +451,13 @@ export default function App() {
   });
 
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('featured');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [checkoutModalOpen, setCheckoutModalOpen] = useState(false);
 
-  // Customer checkout state
+  // Customer Checkout Details
   const [customer, setCustomer] = useState({
     name: '',
     phone: '',
@@ -340,18 +467,28 @@ export default function App() {
     paymentMethod: 'Cash on Delivery (COD)'
   });
 
-  // Selected options inside modal
-  const [modalColor, setModalColor] = useState('');
-  const [modalSize, setModalSize] = useState(null);
-
   useEffect(() => {
     localStorage.setItem('as_cart', JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (product, color, size) => {
-    const chosenColor = color || product.colors[0];
-    const chosenSize = size || product.sizes[1] || product.sizes[0];
-    const itemKey = `${product.id}-${chosenColor}-${chosenSize}`;
+  // Handle opening a product in dedicated page
+  const openProductDetail = (product) => {
+    setSelectedProduct(product);
+    setActiveImageIndex(0);
+    setSelectedSize(product.sizes[1] || product.sizes[0]);
+    setCurrentView('product-detail');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const returnToCatalog = () => {
+    setCurrentView('catalog');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Add to Bag action
+  const addToBag = (product, size) => {
+    const chosenSize = size || product.sizes[0];
+    const itemKey = `${product.id}-${chosenSize}`;
 
     setCart(prev => {
       const existing = prev.find(item => item.key === itemKey);
@@ -364,13 +501,30 @@ export default function App() {
         name: product.name,
         price: product.salePrice || product.price,
         image: product.images[0],
-        color: chosenColor,
         size: chosenSize,
         qty: 1
       }];
     });
 
     setIsCartOpen(true);
+  };
+
+  // Direct "Buy Now" Action
+  const handleBuyNow = (product, size) => {
+    const chosenSize = size || product.sizes[0];
+    const itemKey = `${product.id}-${chosenSize}`;
+
+    setCart([{
+      key: itemKey,
+      id: product.id,
+      name: product.name,
+      price: product.salePrice || product.price,
+      image: product.images[0],
+      size: chosenSize,
+      qty: 1
+    }]);
+
+    setCheckoutModalOpen(true);
   };
 
   const updateCartQty = (key, delta) => {
@@ -400,12 +554,20 @@ export default function App() {
     });
   }, [selectedCategory, searchQuery, sortBy]);
 
+  // Similar Products Suggestion
+  const similarProducts = useMemo(() => {
+    if (!selectedProduct) return [];
+    return PRODUCTS
+      .filter(p => p.category === selectedProduct.category && p.id !== selectedProduct.id)
+      .slice(0, 4);
+  }, [selectedProduct]);
+
   const cartTotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
   const freeShippingThreshold = 1999;
-  const deliveryFee = cartTotal >= freeShippingThreshold ? 0 : 99;
+  const deliveryFee = cartTotal >= freeShippingThreshold || cartTotal === 0 ? 0 : 99;
   const finalTotal = cartTotal + deliveryFee;
 
-  // Function to build WhatsApp message and trigger redirect
+  // Complete Order & Redirect to WhatsApp
   const handleCompleteOrderWhatsApp = (e) => {
     e.preventDefault();
     if (!customer.name.trim() || !customer.phone.trim() || !customer.address.trim()) {
@@ -414,39 +576,36 @@ export default function App() {
     }
 
     let itemsText = cart.map((item, index) => 
-      `${index + 1}. *${item.name}*\n   • Color: ${item.color}\n   • Size: UK/India ${item.size}\n   • Qty: ${item.qty}\n   • Price: ₹${item.price} each (₹${item.price * item.qty})`
+      `${index + 1}. *${item.name}*\n   • Size: UK/India ${item.size}\n   • Quantity: ${item.qty}\n   • Price: ₹${item.price} each (₹${item.price * item.qty})`
     ).join('\n\n');
 
     const message = 
-`🛍️ *NEW WEBSITE ORDER*
+`🛍️ *NEW FOOTWEAR ORDER*
 
-*Order Details:*
+*Order Items:*
 -----------------------------
 ${itemsText}
 
 -----------------------------
-*Subtotal:* ₹${cartTotal}
+*Items Total:* ₹${cartTotal}
 *Delivery Charges:* ${deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}
-*Grand Total:* *₹${finalTotal}*
+*Grand Total Payable:* *₹${finalTotal}*
 *Payment Mode:* ${customer.paymentMethod}
 
-📍 *Customer Details:*
-• *Name:* ${customer.name}
-• *Phone:* ${customer.phone}
+📍 *Delivery Address:*
+• *Customer Name:* ${customer.name}
+• *Mobile Number:* ${customer.phone}
 • *Address:* ${customer.address}
 • *City:* ${customer.city}
 • *Pincode:* ${customer.pincode}
 
-Please confirm this order!`;
+Please confirm my order and share dispatch details!`;
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${STORE_WHATSAPP_NUMBER}?text=${encodedMessage}`;
 
-    // Clear cart and close modal
     setCart([]);
     setCheckoutModalOpen(false);
-
-    // Open WhatsApp
     window.open(whatsappUrl, '_blank');
   };
 
@@ -459,10 +618,10 @@ Please confirm this order!`;
         <span className="opacity-40">•</span>
         <span className="font-semibold text-amber-400">Free Delivery on Orders Over ₹1,999</span>
         <span className="opacity-40">•</span>
-        <span>Fast WhatsApp Support</span>
+        <span>Instant WhatsApp Confirmation</span>
       </div>
 
-      {/* 2. Main Header */}
+      {/* 2. Main Sticky Header */}
       <header className="sticky top-0 z-40 bg-[#FAF8F5]/90 backdrop-blur-md border-b border-stone-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
@@ -476,9 +635,12 @@ Please confirm this order!`;
             {['All', 'Sneakers', 'Loafers', 'Boots', 'Dress', 'Sandals'].map(cat => (
               <button 
                 key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => {
+                  setSelectedCategory(cat);
+                  returnToCatalog();
+                }}
                 className={`transition-colors pb-1 border-b-2 ${
-                  selectedCategory === cat ? 'border-stone-900 text-stone-900 font-semibold' : 'border-transparent text-stone-600 hover:text-stone-900'
+                  selectedCategory === cat && currentView === 'catalog' ? 'border-stone-900 text-stone-900 font-semibold' : 'border-transparent text-stone-600 hover:text-stone-900'
                 }`}
               >
                 {cat}
@@ -486,19 +648,24 @@ Please confirm this order!`;
             ))}
           </nav>
 
-          <div className="text-center cursor-pointer" onClick={() => { setSelectedCategory('All'); setSearchQuery(''); }}>
+          {/* Logo */}
+          <div className="text-center cursor-pointer" onClick={returnToCatalog}>
             <span className="block text-2xl font-serif font-bold tracking-widest text-stone-900">AURA SOLEIL</span>
             <span className="block text-[10px] uppercase tracking-widest text-amber-800 font-medium -mt-1">Fine Footwear Shop</span>
           </div>
 
+          {/* Search & Cart (No Like/Wishlist Icon) */}
           <div className="flex items-center gap-4 sm:gap-6">
             <div className="relative hidden md:block w-48 lg:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
               <input 
                 type="text" 
-                placeholder="Search shoes, leather, size..." 
+                placeholder="Search shoes, boots..." 
                 value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
+                onChange={e => {
+                  setSearchQuery(e.target.value);
+                  if (currentView !== 'catalog') setCurrentView('catalog');
+                }}
                 className="w-full bg-stone-100 text-xs rounded-full pl-9 pr-3 py-2 border-transparent focus:border-stone-400 focus:bg-white focus:outline-none transition-all"
               />
               {searchQuery && (
@@ -508,7 +675,6 @@ Please confirm this order!`;
               )}
             </div>
 
-            {/* Shopping Bag Button (Wishlist Removed) */}
             <button 
               onClick={() => setIsCartOpen(true)}
               className="relative p-2.5 bg-stone-900 text-white rounded-full hover:bg-stone-800 transition-colors flex items-center gap-2"
@@ -532,14 +698,21 @@ Please confirm this order!`;
                 type="text" 
                 placeholder="Search styles..." 
                 value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
+                onChange={e => {
+                  setSearchQuery(e.target.value);
+                  returnToCatalog();
+                }}
                 className="w-full bg-stone-100 text-sm rounded-lg pl-9 pr-3 py-2 focus:outline-none"
               />
             </div>
             {['All', 'Sneakers', 'Loafers', 'Boots', 'Dress', 'Sandals'].map(cat => (
               <button 
                 key={cat}
-                onClick={() => { setSelectedCategory(cat); setMobileMenuOpen(false); }}
+                onClick={() => { 
+                  setSelectedCategory(cat); 
+                  setMobileMenuOpen(false); 
+                  returnToCatalog();
+                }}
                 className="block w-full text-left py-2 font-medium text-stone-800 hover:text-amber-800"
               >
                 {cat}
@@ -549,195 +722,382 @@ Please confirm this order!`;
         )}
       </header>
 
-      {/* 3. Hero Editorial Section */}
-      <section className="relative bg-stone-950 text-white overflow-hidden py-20 sm:py-28">
-        <div className="absolute inset-0 opacity-40 mix-blend-overlay">
-          <img 
-            src="https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=2000&auto=format&fit=crop" 
-            alt="Handcrafted Shoes" 
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="relative max-w-5xl mx-auto px-6 text-center space-y-6">
-          <span className="inline-block uppercase tracking-[0.3em] text-xs font-semibold text-amber-400">
-            Handcrafted Footwear Collection
-          </span>
-          <h1 className="text-4xl sm:text-6xl font-serif font-light leading-tight">
-            Designed for Comfort. <br className="hidden sm:inline" />
-            <span className="italic font-normal">Built for Longevity.</span>
-          </h1>
-          <p className="max-w-2xl mx-auto text-stone-300 text-sm sm:text-base leading-relaxed font-light">
-            Genuine leathers, ergonomic cushioned soles, and classic silhouettes designed for every occasion.
-          </p>
-          <div className="pt-4 flex flex-wrap justify-center gap-4">
-            <button 
-              onClick={() => setSelectedCategory('All')} 
-              className="bg-stone-100 text-stone-900 px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-semibold hover:bg-amber-100 transition-colors flex items-center gap-2"
-            >
-              Browse Shop <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. Trust Badges */}
-      <section className="border-b border-stone-200 bg-white">
-        <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div className="flex flex-col items-center space-y-1">
-            <ShieldCheck className="w-6 h-6 text-amber-800" />
-            <span className="font-semibold text-xs uppercase tracking-wider">Premium Materials</span>
-            <span className="text-[11px] text-stone-500">Selected genuine hides</span>
-          </div>
-          <div className="flex flex-col items-center space-y-1">
-            <Award className="w-6 h-6 text-amber-800" />
-            <span className="font-semibold text-xs uppercase tracking-wider">Artisan Quality</span>
-            <span className="text-[11px] text-stone-500">Fine stitching and finishing</span>
-          </div>
-          <div className="flex flex-col items-center space-y-1">
-            <Truck className="w-6 h-6 text-amber-800" />
-            <span className="font-semibold text-xs uppercase tracking-wider">Fast Courier Dispatch</span>
-            <span className="text-[11px] text-stone-500">Free above ₹1,999</span>
-          </div>
-          <div className="flex flex-col items-center space-y-1">
-            <RotateCcw className="w-6 h-6 text-amber-800" />
-            <span className="font-semibold text-xs uppercase tracking-wider">Easy Size Exchange</span>
-            <span className="text-[11px] text-stone-500">Direct on WhatsApp</span>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Merchandising Controls */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-200 pb-4">
-          <div>
-            <h2 className="text-2xl font-serif font-bold text-stone-900 capitalize">
-              {selectedCategory === 'All' ? 'All Footwear Styles' : `${selectedCategory} Collection`}
-            </h2>
-            <p className="text-xs text-stone-500 mt-1">Showing {filteredProducts.length} models</p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-stone-100 rounded-lg px-3 py-1.5 text-xs text-stone-700">
-              <SlidersHorizontal className="w-3.5 h-3.5" />
-              <span>Sort:</span>
-              <select 
-                value={sortBy} 
-                onChange={e => setSortBy(e.target.value)} 
-                className="bg-transparent font-medium focus:outline-none cursor-pointer"
-              >
-                <option value="featured">Featured First</option>
-                <option value="low-high">Price: Low to High</option>
-                <option value="high-low">Price: High to Low</option>
-                <option value="rating">Highest Rated</option>
-              </select>
+      {/* VIEW 1: PRODUCT CATALOG INTERFACE */}
+      {currentView === 'catalog' && (
+        <>
+          {/* Editorial Banner */}
+          <section className="relative bg-stone-950 text-white overflow-hidden py-20 sm:py-24">
+            <div className="absolute inset-0 opacity-40 mix-blend-overlay">
+              <img 
+                src="https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=2000&auto=format&fit=crop" 
+                alt="Handcrafted Shoes" 
+                className="w-full h-full object-cover"
+              />
             </div>
-          </div>
-        </div>
-      </section>
+            <div className="relative max-w-5xl mx-auto px-6 text-center space-y-5">
+              <span className="inline-block uppercase tracking-[0.3em] text-xs font-semibold text-amber-400">
+                Atelier Handcrafted Footwear
+              </span>
+              <h1 className="text-4xl sm:text-6xl font-serif font-light leading-tight">
+                Crafted for Comfort. <br className="hidden sm:inline" />
+                <span className="italic font-normal">Engineered to Last.</span>
+              </h1>
+              <p className="max-w-xl mx-auto text-stone-300 text-sm font-light">
+                Discover genuine leather sneakers, loafers, and boots designed for timeless daily elegance.
+              </p>
+            </div>
+          </section>
 
-      {/* 6. Product Grid (Without Wishlist/Like Icon) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-20 bg-stone-50 rounded-2xl border border-dashed border-stone-300">
-            <p className="text-stone-500 text-sm">No shoes matched your selected filters.</p>
-            <button 
-              onClick={() => { setSelectedCategory('All'); setSearchQuery(''); }}
-              className="mt-3 text-xs font-semibold text-amber-800 underline uppercase tracking-wider"
-            >
-              Reset Filters
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {filteredProducts.map(p => (
-              <div 
-                key={p.id} 
-                className="group relative bg-white rounded-2xl p-3 border border-stone-200/80 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-stone-100">
-                    <img 
-                      src={p.images[0]} 
-                      alt={p.name} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                    />
-                    
-                    {p.badge && (
-                      <span className="absolute top-3 left-3 bg-stone-900/90 text-white text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">
-                        {p.badge}
-                      </span>
-                    )}
+          {/* Trust Highlights */}
+          <section className="border-b border-stone-200 bg-white">
+            <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              <div className="flex flex-col items-center space-y-1">
+                <ShieldCheck className="w-6 h-6 text-amber-800" />
+                <span className="font-semibold text-xs uppercase tracking-wider">Premium Hides</span>
+                <span className="text-[11px] text-stone-500">Full-grain & calfskin</span>
+              </div>
+              <div className="flex flex-col items-center space-y-1">
+                <Award className="w-6 h-6 text-amber-800" />
+                <span className="font-semibold text-xs uppercase tracking-wider">Artisan Stitching</span>
+                <span className="text-[11px] text-stone-500">Hand-finished construction</span>
+              </div>
+              <div className="flex flex-col items-center space-y-1">
+                <Truck className="w-6 h-6 text-amber-800" />
+                <span className="font-semibold text-xs uppercase tracking-wider">Free Shipping</span>
+                <span className="text-[11px] text-stone-500">On all orders above ₹1,999</span>
+              </div>
+              <div className="flex flex-col items-center space-y-1">
+                <RotateCcw className="w-6 h-6 text-amber-800" />
+                <span className="font-semibold text-xs uppercase tracking-wider">7-Day Size Exchange</span>
+                <span className="text-[11px] text-stone-500">Hassle-free on WhatsApp</span>
+              </div>
+            </div>
+          </section>
 
-                    <button 
-                      onClick={() => {
-                        setSelectedProduct(p);
-                        setModalColor(p.colors[0]);
-                        setModalSize(p.sizes[1] || p.sizes[0]);
-                      }}
-                      className="absolute bottom-3 inset-x-3 bg-stone-900/95 text-white py-2.5 rounded-lg text-xs font-medium tracking-wide uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-1.5"
-                    >
-                      Quick View & Select Size <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+          {/* Collection Grid Controls */}
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-200 pb-4">
+              <div>
+                <h2 className="text-2xl font-serif font-bold text-stone-900 capitalize">
+                  {selectedCategory === 'All' ? 'All Footwear Styles' : `${selectedCategory} Collection`}
+                </h2>
+                <p className="text-xs text-stone-500 mt-1">Showing {filteredProducts.length} shoe models</p>
+              </div>
 
-                  <div className="mt-4 px-1">
-                    <div className="flex items-center justify-between text-[11px] text-stone-400 mb-1">
-                      <span className="uppercase tracking-widest">{p.category}</span>
-                      <div className="flex items-center gap-1 text-stone-700">
-                        <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                        <span>{p.rating}</span>
-                        <span className="text-stone-400">({p.reviewsCount})</span>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 bg-stone-100 rounded-lg px-3 py-1.5 text-xs text-stone-700">
+                  <SlidersHorizontal className="w-3.5 h-3.5" />
+                  <span>Sort By:</span>
+                  <select 
+                    value={sortBy} 
+                    onChange={e => setSortBy(e.target.value)} 
+                    className="bg-transparent font-medium focus:outline-none cursor-pointer"
+                  >
+                    <option value="featured">Featured</option>
+                    <option value="low-high">Price: Low to High</option>
+                    <option value="high-low">Price: High to Low</option>
+                    <option value="rating">Customer Rating</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 20 Products Grid */}
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {filteredProducts.map(p => (
+                <div 
+                  key={p.id} 
+                  onClick={() => openProductDetail(p)}
+                  className="group cursor-pointer bg-white rounded-2xl p-3 border border-stone-200/80 hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-stone-100">
+                      <img 
+                        src={p.images[0]} 
+                        alt={p.name} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                      />
+                      
+                      {p.badge && (
+                        <span className="absolute top-3 left-3 bg-stone-900/90 text-white text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">
+                          {p.badge}
+                        </span>
+                      )}
+
+                      <div className="absolute bottom-3 inset-x-3 bg-stone-900/90 text-white py-2.5 rounded-lg text-xs font-semibold tracking-wide uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-1.5">
+                        View Product <ChevronRight className="w-3.5 h-3.5" />
                       </div>
                     </div>
 
-                    <h3 
-                      onClick={() => {
-                        setSelectedProduct(p);
-                        setModalColor(p.colors[0]);
-                        setModalSize(p.sizes[1] || p.sizes[0]);
-                      }}
-                      className="font-serif font-semibold text-stone-900 text-base group-hover:text-amber-800 transition-colors cursor-pointer line-clamp-1"
-                    >
-                      {p.name}
-                    </h3>
+                    <div className="mt-4 px-1">
+                      <div className="flex items-center justify-between text-[11px] text-stone-400 mb-1">
+                        <span className="uppercase tracking-widest">{p.category}</span>
+                        <div className="flex items-center gap-1 text-stone-700">
+                          <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                          <span>{p.rating}</span>
+                          <span className="text-stone-400">({p.reviewsCount})</span>
+                        </div>
+                      </div>
 
-                    <p className="text-xs text-stone-500 mt-1 line-clamp-2 leading-relaxed">
-                      {p.description}
-                    </p>
+                      <h3 className="font-serif font-semibold text-stone-900 text-base group-hover:text-amber-800 transition-colors line-clamp-1">
+                        {p.name}
+                      </h3>
+
+                      <p className="text-xs text-stone-500 mt-1 line-clamp-2 leading-relaxed">
+                        {p.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between px-1">
+                    <div>
+                      {p.salePrice ? (
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-stone-900 text-base">₹{p.salePrice}</span>
+                          <span className="text-stone-400 line-through text-xs">₹{p.price}</span>
+                        </div>
+                      ) : (
+                        <span className="font-bold text-stone-900 text-base">₹{p.price}</span>
+                      )}
+                    </div>
+
+                    <span className="text-xs font-semibold uppercase tracking-wider text-amber-900 group-hover:underline">
+                      Inspect &rarr;
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* VIEW 2: DEDICATED FULL PRODUCT DETAIL PAGE (PDP) */}
+      {currentView === 'product-detail' && selectedProduct && (
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          
+          {/* Breadcrumb Navigation */}
+          <button 
+            onClick={returnToCatalog}
+            className="flex items-center gap-2 text-xs uppercase tracking-wider text-stone-500 hover:text-stone-900 font-semibold mb-8 group transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Catalog
+          </button>
+
+          {/* Product Gallery & Buy Box */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white rounded-3xl p-6 sm:p-10 border border-stone-200/80 shadow-sm">
+            
+            {/* Multi-Angle Images Gallery */}
+            <div className="space-y-4">
+              <div className="aspect-square bg-stone-100 rounded-2xl overflow-hidden shadow-inner">
+                <img 
+                  src={selectedProduct.images[activeImageIndex]} 
+                  alt={selectedProduct.name} 
+                  className="w-full h-full object-cover transition-all duration-300"
+                />
+              </div>
+
+              {/* Angle Selector Thumbnails */}
+              <div className="grid grid-cols-3 gap-3">
+                {selectedProduct.images.map((imgUrl, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveImageIndex(idx)}
+                    className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${
+                      activeImageIndex === idx ? 'border-stone-900 scale-95 shadow-md' : 'border-stone-200 opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <img src={imgUrl} alt={`Angle ${idx + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Product Meta & Purchase Controls */}
+            <div className="flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs uppercase tracking-[0.2em] text-amber-800 font-bold">
+                    {selectedProduct.category}
+                  </span>
+                  <div className="flex items-center gap-1.5 text-xs font-semibold bg-amber-50 px-2.5 py-1 rounded-full text-amber-900 border border-amber-200/60">
+                    <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                    <span>{selectedProduct.rating}</span>
+                    <span className="text-stone-400">({selectedProduct.reviewsCount} Reviews)</span>
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between px-1">
-                  <div>
-                    {p.salePrice ? (
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-stone-900 text-sm">₹{p.salePrice}</span>
-                        <span className="text-stone-400 line-through text-xs">₹{p.price}</span>
-                      </div>
-                    ) : (
-                      <span className="font-bold text-stone-900 text-sm">₹{p.price}</span>
-                    )}
+                <h1 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 mt-2">
+                  {selectedProduct.name}
+                </h1>
+
+                <div className="flex items-baseline gap-3 mt-4">
+                  <span className="text-3xl font-bold text-stone-900">
+                    ₹{selectedProduct.salePrice || selectedProduct.price}
+                  </span>
+                  {selectedProduct.salePrice && (
+                    <>
+                      <span className="text-base text-stone-400 line-through">₹{selectedProduct.price}</span>
+                      <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                        Save ₹{selectedProduct.price - selectedProduct.salePrice}
+                      </span>
+                    </>
+                  )}
+                </div>
+
+                <p className="text-xs sm:text-sm text-stone-600 mt-5 leading-relaxed">
+                  {selectedProduct.description}
+                </p>
+
+                {/* UK / India Size Picker */}
+                <div className="mt-8 pt-6 border-t border-stone-100">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-xs uppercase tracking-wider font-bold text-stone-800">
+                      Select UK / India Size
+                    </label>
+                    <span className="text-xs text-stone-500 underline cursor-pointer">Size Guide</span>
                   </div>
 
+                  <div className="flex flex-wrap gap-2.5">
+                    {selectedProduct.sizes.map(size => (
+                      <button
+                        key={size}
+                        onClick={() => setSelectedSize(size)}
+                        className={`w-12 h-12 rounded-xl text-sm font-semibold transition-all flex items-center justify-center border ${
+                          selectedSize === size 
+                            ? 'bg-stone-900 text-white border-stone-900 shadow-md' 
+                            : 'border-stone-300 text-stone-800 hover:border-stone-500 bg-white'
+                        }`}
+                      >
+                        UK {size}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Stock Assurance */}
+                <div className="mt-4 flex items-center gap-2 text-xs text-emerald-700 font-medium">
+                  <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                  In Stock & Ready for Immediate Dispatch
+                </div>
+              </div>
+
+              {/* Action Buttons: Add to Bag & Buy Now */}
+              <div className="mt-8 pt-6 border-t border-stone-100 space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button 
-                    onClick={() => {
-                      setSelectedProduct(p);
-                      setModalColor(p.colors[0]);
-                      setModalSize(p.sizes[1] || p.sizes[0]);
-                    }}
-                    className="text-xs font-semibold uppercase tracking-wider text-amber-900 hover:text-black transition-colors flex items-center gap-1"
+                    onClick={() => addToBag(selectedProduct, selectedSize)}
+                    className="w-full bg-stone-100 text-stone-900 hover:bg-stone-200 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 border border-stone-300"
                   >
-                    Select & Add <ShoppingBag className="w-3.5 h-3.5" />
+                    <ShoppingBag className="w-4 h-4" /> Add To Bag
+                  </button>
+
+                  <button 
+                    onClick={() => handleBuyNow(selectedProduct, selectedSize)}
+                    className="w-full bg-stone-900 text-white hover:bg-amber-800 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-lg shadow-stone-900/10"
+                  >
+                    <Zap className="w-4 h-4 text-amber-400 fill-amber-400" /> Buy Now
                   </button>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
-        )}
-      </section>
 
-      {/* 7. Footer */}
-      <footer className="bg-stone-950 text-stone-400 text-xs py-14 border-t border-stone-800">
+          {/* Verified Customer Reviews Section */}
+          <section className="mt-16 bg-white rounded-3xl p-6 sm:p-10 border border-stone-200/80">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-stone-100 gap-4">
+              <div>
+                <h3 className="font-serif text-2xl font-bold text-stone-900">Customer Reviews</h3>
+                <p className="text-xs text-stone-500 mt-1">Verified buyer experiences for this shoe</p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <span className="text-2xl font-bold text-stone-900">{selectedProduct.rating}</span>
+                  <span className="text-stone-400 text-xs"> / 5.0</span>
+                  <p className="text-[11px] text-stone-500">Based on {selectedProduct.reviewsCount} buyers</p>
+                </div>
+                <div className="flex text-amber-500">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-amber-500" />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+              {selectedProduct.reviews.map(review => (
+                <div key={review.id} className="p-5 bg-stone-50 rounded-2xl border border-stone-200/60">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-semibold text-xs text-stone-900 flex items-center gap-1.5">
+                      {review.author} 
+                      <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-medium flex items-center gap-0.5">
+                        <Check className="w-3 h-3" /> Verified
+                      </span>
+                    </span>
+                    <span className="text-[11px] text-stone-400">{review.date}</span>
+                  </div>
+                  <div className="flex text-amber-500 mb-2">
+                    {[...Array(review.rating)].map((_, idx) => (
+                      <Star key={idx} className="w-3 h-3 fill-amber-500" />
+                    ))}
+                  </div>
+                  <p className="text-xs text-stone-600 leading-relaxed italic">
+                    "{review.comment}"
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Similar Products Recommendation */}
+          {similarProducts.length > 0 && (
+            <section className="mt-16">
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h3 className="font-serif text-2xl font-bold text-stone-900">Similar Pair Recommendations</h3>
+                  <p className="text-xs text-stone-500 mt-1">Other popular picks in {selectedProduct.category}</p>
+                </div>
+                <button 
+                  onClick={returnToCatalog} 
+                  className="text-xs font-semibold uppercase tracking-wider text-amber-900 underline"
+                >
+                  View All
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {similarProducts.map(sim => (
+                  <div 
+                    key={sim.id}
+                    onClick={() => openProductDetail(sim)}
+                    className="group cursor-pointer bg-white rounded-2xl p-3 border border-stone-200/80 hover:shadow-lg transition-all"
+                  >
+                    <div className="aspect-square bg-stone-100 rounded-xl overflow-hidden">
+                      <img src={sim.images[0]} alt={sim.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    </div>
+                    <div className="mt-3 px-1">
+                      <h4 className="font-serif font-semibold text-sm text-stone-900 group-hover:text-amber-800 transition-colors line-clamp-1">
+                        {sim.name}
+                      </h4>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-xs font-bold text-stone-900">₹{sim.salePrice || sim.price}</span>
+                        <span className="text-[11px] font-semibold text-stone-500 uppercase tracking-wider">Explore &rarr;</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+        </main>
+      )}
+
+      {/* FOOTER */}
+      <footer className="bg-stone-950 text-stone-400 text-xs py-14 border-t border-stone-800 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 text-center md:text-left">
           <div>
             <h4 className="font-serif text-sm font-semibold text-white mb-2">AURA SOLEIL FOOTWEAR</h4>
@@ -746,14 +1106,14 @@ Please confirm this order!`;
             </p>
           </div>
           <div>
-            <h4 className="font-serif text-sm font-semibold text-white mb-2">Customer Support</h4>
-            <p className="text-stone-400 text-xs">Orders directly confirmed via WhatsApp.</p>
-            <p className="text-stone-400 text-xs mt-1">Available 10:00 AM – 8:00 PM</p>
+            <h4 className="font-serif text-sm font-semibold text-white mb-2">Customer Assistance</h4>
+            <p className="text-stone-400 text-xs">Direct WhatsApp dispatch and size exchange updates.</p>
+            <p className="text-stone-400 text-xs mt-1">Operational Hours: 10:00 AM – 8:00 PM</p>
           </div>
           <div>
-            <h4 className="font-serif text-sm font-semibold text-white mb-2">Shop Policies</h4>
-            <p className="text-stone-400 text-xs">Easy 7-day size exchange upon delivery.</p>
-            <p className="text-stone-400 text-xs mt-1">Cash on Delivery available across eligible pin codes.</p>
+            <h4 className="font-serif text-sm font-semibold text-white mb-2">Store Policy</h4>
+            <p className="text-stone-400 text-xs">7-day doorstep size exchange guaranteed.</p>
+            <p className="text-stone-400 text-xs mt-1">Cash on Delivery available on eligible pin codes.</p>
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 border-t border-stone-900 pt-6 text-center text-stone-600">
@@ -761,89 +1121,7 @@ Please confirm this order!`;
         </div>
       </footer>
 
-      {/* MODAL: Product Detail & Size Picker */}
-      {selectedProduct && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 relative shadow-2xl">
-            <button 
-              onClick={() => setSelectedProduct(null)}
-              className="absolute top-4 right-4 p-2 text-stone-400 hover:text-stone-900"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
-              <div className="aspect-square bg-stone-100 rounded-xl overflow-hidden">
-                <img 
-                  src={selectedProduct.images[0]} 
-                  alt={selectedProduct.name} 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              <div className="flex flex-col justify-between">
-                <div>
-                  <span className="text-[10px] uppercase tracking-widest text-amber-800 font-semibold">{selectedProduct.category}</span>
-                  <h3 className="font-serif text-xl font-bold text-stone-900 mt-1">{selectedProduct.name}</h3>
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-lg font-bold text-stone-900">
-                      ₹{selectedProduct.salePrice || selectedProduct.price}
-                    </span>
-                    {selectedProduct.salePrice && (
-                      <span className="text-xs text-stone-400 line-through">₹{selectedProduct.price}</span>
-                    )}
-                  </div>
-                  <p className="text-xs text-stone-600 mt-3 leading-relaxed">{selectedProduct.description}</p>
-
-                  <div className="mt-4">
-                    <label className="text-[11px] uppercase tracking-wider font-semibold text-stone-700 block mb-1.5">Color: {modalColor}</label>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedProduct.colors.map(col => (
-                        <button
-                          key={col}
-                          onClick={() => setModalColor(col)}
-                          className={`text-xs px-3 py-1 rounded-full border ${modalColor === col ? 'border-stone-900 bg-stone-900 text-white' : 'border-stone-200 text-stone-700 hover:border-stone-400'}`}
-                        >
-                          {col}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="mt-4">
-                    <label className="text-[11px] uppercase tracking-wider font-semibold text-stone-700 block mb-1.5">UK / India Size: {modalSize}</label>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedProduct.sizes.map(sz => (
-                        <button
-                          key={sz}
-                          onClick={() => setModalSize(sz)}
-                          className={`w-10 h-10 rounded-lg text-xs font-semibold border ${modalSize === sz ? 'border-stone-900 bg-stone-900 text-white' : 'border-stone-200 text-stone-800 hover:border-stone-400'}`}
-                        >
-                          UK {sz}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-6 mt-6 border-t border-stone-100">
-                  <button 
-                    onClick={() => {
-                      addToCart(selectedProduct, modalColor, modalSize);
-                      setSelectedProduct(null);
-                    }}
-                    className="w-full bg-stone-900 text-white py-3.5 rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-amber-800 transition-colors flex items-center justify-center gap-2"
-                  >
-                    Add To Bag <ShoppingBag className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* DRAWER: Shopping Cart */}
+      {/* SLIDE-OUT CART DRAWER */}
       {isCartOpen && (
         <div className="fixed inset-0 z-50 overflow-hidden">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity" onClick={() => setIsCartOpen(false)} />
@@ -868,7 +1146,7 @@ Please confirm this order!`;
                   </span>
                 ) : (
                   <p className="text-stone-700">
-                    Add items worth <span className="font-bold text-stone-900">₹{freeShippingThreshold - cartTotal}</span> more to get Free Delivery.
+                    Add items worth <span className="font-bold text-stone-900">₹{freeShippingThreshold - cartTotal}</span> more for Free Delivery.
                   </p>
                 )}
               </div>
@@ -891,7 +1169,7 @@ Please confirm this order!`;
                       <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-lg bg-stone-200" />
                       <div className="flex-1">
                         <h4 className="font-semibold text-xs text-stone-900 line-clamp-1">{item.name}</h4>
-                        <span className="text-[11px] text-stone-500 block mt-0.5">{item.color} • UK {item.size}</span>
+                        <span className="text-[11px] text-stone-500 block mt-0.5">Size: UK {item.size}</span>
                         <span className="font-bold text-xs text-stone-800 block mt-1">₹{item.price}</span>
                         
                         <div className="flex items-center justify-between mt-2">
@@ -921,7 +1199,7 @@ Please confirm this order!`;
                     <span className="font-semibold text-stone-900">₹{cartTotal}</span>
                   </div>
                   <div className="flex justify-between text-xs text-stone-600">
-                    <span>Delivery Charges</span>
+                    <span>Delivery Fee</span>
                     <span>{deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}</span>
                   </div>
                   <div className="flex justify-between text-sm font-bold text-stone-900 pt-2 border-t border-stone-200">
@@ -929,7 +1207,6 @@ Please confirm this order!`;
                     <span>₹{finalTotal}</span>
                   </div>
 
-                  {/* PROCEED TO CHECKOUT BUTTON */}
                   <button 
                     onClick={() => {
                       setIsCartOpen(false);
@@ -947,26 +1224,26 @@ Please confirm this order!`;
         </div>
       )}
 
-      {/* CHECKOUT MODAL -> SENDS FULL DETAILS TO WHATSAPP */}
+      {/* CHECKOUT & PLACE ORDER INTERFACE (DIRECT TO WHATSAPP) */}
       {checkoutModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto">
-            <button onClick={() => setCheckoutModalOpen(false)} className="absolute top-4 right-4 text-stone-400 hover:text-stone-900">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto shadow-2xl">
+            <button onClick={() => setCheckoutModalOpen(false)} className="absolute top-5 right-5 text-stone-400 hover:text-stone-900">
               <X className="w-5 h-5" />
             </button>
 
             <div>
               <div className="flex items-center gap-2">
                 <Send className="w-5 h-5 text-emerald-600" />
-                <h3 className="font-serif text-xl font-bold text-stone-900">Delivery Details</h3>
+                <h3 className="font-serif text-xl font-bold text-stone-900">Place Order & WhatsApp</h3>
               </div>
               <p className="text-xs text-stone-500 mt-1">
-                Enter your address. Once you click complete order, your order will open on the seller's WhatsApp.
+                Enter your shipping details. Your order will format and open immediately on WhatsApp.
               </p>
 
-              <form onSubmit={handleCompleteOrderWhatsApp} className="mt-4 space-y-3">
+              <form onSubmit={handleCompleteOrderWhatsApp} className="mt-5 space-y-3.5">
                 <div>
-                  <label className="block text-[11px] font-semibold uppercase text-stone-600 mb-1">Full Name *</label>
+                  <label className="block text-[11px] font-bold uppercase text-stone-600 mb-1">Full Name *</label>
                   <input 
                     type="text" 
                     required
@@ -978,7 +1255,7 @@ Please confirm this order!`;
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold uppercase text-stone-600 mb-1">WhatsApp / Phone Number *</label>
+                  <label className="block text-[11px] font-bold uppercase text-stone-600 mb-1">WhatsApp Mobile Number *</label>
                   <input 
                     type="tel" 
                     required
@@ -990,11 +1267,11 @@ Please confirm this order!`;
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold uppercase text-stone-600 mb-1">Complete Delivery Address *</label>
+                  <label className="block text-[11px] font-bold uppercase text-stone-600 mb-1">Complete Delivery Address *</label>
                   <textarea 
                     rows={2}
                     required
-                    placeholder="House/Flat No., Building, Street Name, Landmark" 
+                    placeholder="House/Flat No., Apartment, Street, Landmark" 
                     value={customer.address}
                     onChange={e => setCustomer({...customer, address: e.target.value})}
                     className="w-full text-xs p-2.5 border border-stone-300 rounded-lg focus:outline-none focus:border-stone-900" 
@@ -1003,7 +1280,7 @@ Please confirm this order!`;
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[11px] font-semibold uppercase text-stone-600 mb-1">City *</label>
+                    <label className="block text-[11px] font-bold uppercase text-stone-600 mb-1">City *</label>
                     <input 
                       type="text" 
                       required
@@ -1014,7 +1291,7 @@ Please confirm this order!`;
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-semibold uppercase text-stone-600 mb-1">Pincode *</label>
+                    <label className="block text-[11px] font-bold uppercase text-stone-600 mb-1">Pincode *</label>
                     <input 
                       type="text" 
                       required
@@ -1027,7 +1304,7 @@ Please confirm this order!`;
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold uppercase text-stone-600 mb-1">Payment Method</label>
+                  <label className="block text-[11px] font-bold uppercase text-stone-600 mb-1">Payment Method</label>
                   <select 
                     value={customer.paymentMethod}
                     onChange={e => setCustomer({...customer, paymentMethod: e.target.value})}
@@ -1038,28 +1315,28 @@ Please confirm this order!`;
                   </select>
                 </div>
 
-                {/* Summary Box */}
-                <div className="mt-4 p-3 bg-stone-50 rounded-xl border border-stone-200 space-y-1">
+                {/* Bill Summary */}
+                <div className="mt-4 p-4 bg-stone-50 rounded-2xl border border-stone-200 space-y-1.5">
                   <div className="flex justify-between text-xs text-stone-600">
-                    <span>Total Items:</span>
-                    <span>{cart.reduce((a, b) => a + b.qty, 0)}</span>
+                    <span>Total Quantity:</span>
+                    <span>{cart.reduce((a, b) => a + b.qty, 0)} pair(s)</span>
                   </div>
                   <div className="flex justify-between text-xs text-stone-600">
-                    <span>Delivery Charges:</span>
+                    <span>Delivery Charge:</span>
                     <span>{deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}</span>
                   </div>
-                  <div className="flex justify-between text-sm font-bold text-stone-900 pt-1 border-t border-stone-200">
-                    <span>Payable Amount:</span>
+                  <div className="flex justify-between text-sm font-bold text-stone-900 pt-2 border-t border-stone-200">
+                    <span>Payable Total:</span>
                     <span className="text-emerald-700">₹{finalTotal}</span>
                   </div>
                 </div>
 
-                {/* COMPLETE ORDER BUTTON */}
+                {/* Final WhatsApp Trigger Button */}
                 <button 
                   type="submit"
-                  className="w-full mt-3 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20"
+                  className="w-full mt-3 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20"
                 >
-                  <Send className="w-4 h-4" /> Complete Order & Send on WhatsApp
+                  <Send className="w-4 h-4" /> Place Order & Send on WhatsApp
                 </button>
               </form>
             </div>
